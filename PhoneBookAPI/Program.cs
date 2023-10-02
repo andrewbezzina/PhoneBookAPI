@@ -1,3 +1,5 @@
+using PhoneBookAPI.DbHelper;
+
 namespace PhoneBookAPI
 {
     public class Program
@@ -10,6 +12,9 @@ namespace PhoneBookAPI
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.json");
+            builder.Services.AddDbContext<PhoneBookDbContext>();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
