@@ -1,6 +1,6 @@
 CREATE TABLE Companies (
     CompanyId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
-    Name NVARCHAR(255) NOT NULL, 
+    Name NVARCHAR(255) NOT NULL UNIQUE, 
     RegistrationDate DATE NOT NULL
 );
 

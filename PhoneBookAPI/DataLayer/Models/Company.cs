@@ -1,4 +1,4 @@
-﻿namespace PhoneBookAPI.Models.SqlDB
+﻿namespace PhoneBookAPI.DataLayer.Models
 {
     public class Company
     {

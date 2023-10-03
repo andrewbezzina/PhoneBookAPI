@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PhoneBookAPI.Models.SqlDB;
+using PhoneBookAPI.DataLayer.Models;
 
-namespace PhoneBookAPI.DbHelper
+namespace PhoneBookAPI.DataLayer.Contexts
 {
     public class PhoneBookDbContext : DbContext
     {
@@ -21,7 +21,7 @@ namespace PhoneBookAPI.DbHelper
 
         public DbSet<Company> Companies { get; set; }
 
-        public DbSet<Person> Persons { get; set; }
+        public DbSet<Person> People { get; set; }
 
     }
 }
