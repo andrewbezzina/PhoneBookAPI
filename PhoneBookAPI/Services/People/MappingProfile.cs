@@ -10,7 +10,7 @@ namespace PhoneBookAPI.Services.People
     {
         public MappingProfile()
         {
-            CreateMap<AddPerson, Person>();
+            CreateMap<PersonDetails, Person>();
             //CreateMap<Person, DisplayPerson>();
         }
     }

@@ -18,7 +18,7 @@ namespace PhoneBookAPI.Services.People
             _mapper =mapper;
         }
 
-        public async Task<Person> Add(AddPerson addPerson)
+        public async Task<Person> Add(PersonDetails addPerson)
         {
             if (_context.People == null)
             {
@@ -82,13 +82,31 @@ namespace PhoneBookAPI.Services.People
             
         }
 
-        public async Task<Person?> Update(int id)
+        public async Task<Person?> Update(int id, Person person)
         {
             if (_context.People == null)
             {
                 return null;
             }
-            throw new NotImplementedException();
+
+            _context.Entry(person).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return person;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PersonExists(id))
+                {
+                    return null;
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
         public async Task<Person?> WildCard()
@@ -111,8 +129,14 @@ namespace PhoneBookAPI.Services.People
                                                FullName = p.FullName,
                                                PhoneNumber = p.PhoneNumber,
                                                Address = p.Address,
+                                               CompanyId = p.CompanyId,
                                                CompanyName = c.Name
                                            });
+        }
+
+        private bool PersonExists(int id)
+        {
+            return (_context.People?.Any(e => e.PersonId == id)).GetValueOrDefault();
         }
     }
 }

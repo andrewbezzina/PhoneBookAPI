@@ -72,8 +72,9 @@ namespace PhoneBookAPI.Controllers
         }
 
         // PUT: api/People/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutPerson(int id, Person person)
         {
             if (id != person.PersonId)
@@ -81,22 +82,10 @@ namespace PhoneBookAPI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(person).State = EntityState.Modified;
-
-            try
+            var ret = await _peopleService.Update(id, person);
+            if ( ret == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PersonExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
@@ -105,7 +94,7 @@ namespace PhoneBookAPI.Controllers
         // POST: api/People
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Person))]
-        public async Task<ActionResult<Person>> PostPerson(AddPerson person)
+        public async Task<ActionResult<Person>> PostPerson(PersonDetails person)
         {
 
             var retPerson = await _peopleService.Add(person);
@@ -132,9 +121,6 @@ namespace PhoneBookAPI.Controllers
             return NoContent();
         }
 
-        private bool PersonExists(int id)
-        {
-            return (_context.People?.Any(e => e.PersonId == id)).GetValueOrDefault();
-        }
+
     }
 }

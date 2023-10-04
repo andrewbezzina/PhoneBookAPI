@@ -1,6 +1,6 @@
 ﻿namespace PhoneBookAPI.DataLayer.Models.Request
 {
-    public class AddPerson
+    public class PersonDetails
     {
         public string FullName { get; set; }
         public string PhoneNumber { get; set; }
