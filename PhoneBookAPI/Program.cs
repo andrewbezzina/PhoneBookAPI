@@ -1,6 +1,7 @@
 using Autofac.Extensions.DependencyInjection;
 using Autofac;
 using PhoneBookAPI.DataLayer.Contexts;
+using Autofac.Core;
 
 namespace PhoneBookAPI
 {
@@ -17,6 +18,7 @@ namespace PhoneBookAPI
                 {
                     builder.RegisterModule(new AutofacBusinessModule());
                 });
+            builder.Services.AddAutoMapper(typeof(Program));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

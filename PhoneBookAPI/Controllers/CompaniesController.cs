@@ -8,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PhoneBookAPI.DataLayer.Contexts;
 using PhoneBookAPI.DataLayer.Models;
-using PhoneBookAPI.Services;
+using PhoneBookAPI.DataLayer.Models.Response;
+using PhoneBookAPI.Services.Companies;
 
 namespace PhoneBookAPI.Controllers
 {
@@ -29,7 +30,7 @@ namespace PhoneBookAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Company>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<Company>>> GetCompanies()
+        public async Task<ActionResult<IEnumerable<DisplayCompany>>> GetCompanies()
         {
             var companies = await _companyService.GetAll();
             if (companies.IsNullOrEmpty())
@@ -43,7 +44,7 @@ namespace PhoneBookAPI.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Company))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Company>> GetCompany(int id)
+        public async Task<ActionResult<DisplayCompany>> GetCompany(int id)
         {
 
             var company = await _companyService.Get(id);
@@ -106,21 +107,6 @@ namespace PhoneBookAPI.Controllers
 
             return NoContent();
         }
-
-        // POST: api/Companies
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<Company>> PostCompany(Company company)
-        //{
-        //    if (_context.Companies == null)
-        //    {
-        //        return Problem("Entity set 'PhoneBookDbContext.Companies'  is null.");
-        //    }
-        //    _context.Companies.Add(company);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetCompany", new { id = company.CompanyId }, company);
-        //}
 
         // DELETE: api/Companies/5
         [HttpDelete("{id}")]

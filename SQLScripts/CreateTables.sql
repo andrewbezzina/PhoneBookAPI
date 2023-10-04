@@ -6,7 +6,7 @@ CREATE TABLE Companies (
 
 GO
 
-CREATE TABLE Persons (
+CREATE TABLE People (
     PersonId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	FullName NVARCHAR(255) NOT NULL,
 	PhoneNumber NVARCHAR(20) NOT NULL,
@@ -14,3 +14,6 @@ CREATE TABLE Persons (
 	CompanyId INT NOT NULL,
     FOREIGN KEY (CompanyId) REFERENCES Companies(CompanyId)
 );
+
+GO 
+

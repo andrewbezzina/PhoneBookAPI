@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PhoneBookAPI.DataLayer.Models;
-using PhoneBookAPI.DataLayer.Models.Output;
+using PhoneBookAPI.DataLayer.Models.Response;
 
-namespace PhoneBookAPI.Services
+namespace PhoneBookAPI.Services.Companies
 {
     public interface ICompanyService
     {

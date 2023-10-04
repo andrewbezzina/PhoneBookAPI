@@ -1,5 +1,6 @@
 ﻿using Autofac;
-using PhoneBookAPI.Services;
+using PhoneBookAPI.Services.Companies;
+using PhoneBookAPI.Services.People;
 
 namespace PhoneBookAPI
 {

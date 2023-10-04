@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PhoneBookAPI.DataLayer.Contexts;
 using PhoneBookAPI.DataLayer.Models;
-using PhoneBookAPI.Services;
+using PhoneBookAPI.DataLayer.Models.Request;
+using PhoneBookAPI.DataLayer.Models.Response;
+using PhoneBookAPI.Services.People;
 
 namespace PhoneBookAPI.Controllers
 {
@@ -25,25 +28,26 @@ namespace PhoneBookAPI.Controllers
         }
 
         // GET: api/People
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<DisplayPerson>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Person>>> GetPersons()
+        public async Task<ActionResult<IEnumerable<DisplayPerson>>> GetPersons()
         {
-          if (_context.People == null)
-          {
-              return NotFound();
-          }
-            return await _context.People.ToListAsync();
+            var people = await _peopleService.GetAll();
+            if (people.IsNullOrEmpty())
+            {
+                return NotFound();
+            }
+            return people.ToList();
         }
 
         // GET: api/People/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Person>> GetPerson(int id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DisplayPerson))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<DisplayPerson>> GetPerson(int id)
         {
-          if (_context.People == null)
-          {
-              return NotFound();
-          }
-            var person = await _context.People.FindAsync(id);
+            var person = await _peopleService.Get(id);
 
             if (person == null)
             {
@@ -51,6 +55,20 @@ namespace PhoneBookAPI.Controllers
             }
 
             return person;
+        }
+
+        // GET: api/People/John
+        [HttpGet("search/{searchString}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<DisplayPerson>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<DisplayPerson>>> SearchPerson(string searchString)
+        {
+            var people = await _peopleService.Search(searchString);
+            if (people.IsNullOrEmpty())
+            {
+                return NotFound();
+            }
+            return people.ToList();
         }
 
         // PUT: api/People/5
@@ -85,10 +103,9 @@ namespace PhoneBookAPI.Controllers
         }
 
         // POST: api/People
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Person))]
-        public async Task<ActionResult<Person>> PostPerson(Person person)
+        public async Task<ActionResult<Person>> PostPerson(AddPerson person)
         {
 
             var retPerson = await _peopleService.Add(person);
@@ -102,20 +119,15 @@ namespace PhoneBookAPI.Controllers
 
         // DELETE: api/People/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeletePerson(int id)
         {
-            if (_context.People == null)
-            {
-                return NotFound();
-            }
-            var person = await _context.People.FindAsync(id);
+            var person = await _peopleService.Remove(id);
             if (person == null)
             {
                 return NotFound();
             }
-
-            _context.People.Remove(person);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }

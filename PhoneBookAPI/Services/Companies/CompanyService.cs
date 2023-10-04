@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PhoneBookAPI.DataLayer.Contexts;
 using PhoneBookAPI.DataLayer.Models;
-using PhoneBookAPI.DataLayer.Models.Output;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using PhoneBookAPI.DataLayer.Models.Response;
 
-namespace PhoneBookAPI.Services
+
+namespace PhoneBookAPI.Services.Companies
 {
     public class CompanyService : ICompanyService
     {
         private readonly PhoneBookDbContext _context;
 
-        public CompanyService(PhoneBookDbContext context)
+        public CompanyService(PhoneBookDbContext context, IMapper mapper)
         {
             _context = context;
         }
@@ -33,8 +33,6 @@ namespace PhoneBookAPI.Services
             return company;
         }
 
-
-        //TODO: add employee count functionality
         public async Task<IEnumerable<DisplayCompany>?> GetAll()
         {
             if (_context.Companies == null)
@@ -42,32 +40,17 @@ namespace PhoneBookAPI.Services
                 return null;
             }
 
-            return await _context.Companies.Select(c => new DisplayCompany
-            {
-                CompanyId = c.CompanyId,
-                Name = c.Name,
-                RegistrationDate = c.RegistrationDate
-            }).ToListAsync();
-            
+            return await GetCompaniesWithPeopleCount().ToListAsync();
         }
 
-        
+
         public async Task<DisplayCompany?> Get(int id)
         {
             if (_context.Companies == null)
             {
                 return null;
             }
-            var company = await _context.Companies.FindAsync(id);
-            var DisplayCompany = new DisplayCompany
-            {
-                CompanyId = company.CompanyId,
-                Name = company.Name,
-                RegistrationDate = company.RegistrationDate
-            };
-            //TODO: add employee count functionality
-
-            return DisplayCompany;
+            return await GetCompaniesWithPeopleCount().Where(dc => dc.CompanyId == id).FirstOrDefaultAsync();
         }
 
         public async Task<bool> CompanyExists(string name)
@@ -79,11 +62,19 @@ namespace PhoneBookAPI.Services
             return await _context.Companies.AnyAsync(e => e.Name == name);
         }
 
-        private bool CompanyExists(int id)
+        private IQueryable<DisplayCompany> GetCompaniesWithPeopleCount()
         {
-            return (_context.Companies?.Any(e => e.CompanyId == id)).GetValueOrDefault();
+            return _context.Companies.GroupJoin(_context.People,
+                c => c.CompanyId,
+                p => p.CompanyId,
+                (c, cGroup) => new DisplayCompany
+                {
+                    CompanyId = c.CompanyId,
+                    Name = c.Name,
+                    RegistrationDate = c.RegistrationDate,
+                    NumberOfPeople = cGroup.Count()
+                });
         }
-
 
     }
 }
