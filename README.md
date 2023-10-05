@@ -2,6 +2,7 @@
  An interview task for Helio Gaming
 
 ## Instructions
+ * Visual Studio 2022 Solution with PhhoneBook API: `PhoneBookAPI\PhoneBookAPI.sln`
  * API connects to an Azure SQLServer Database so it should work out of the box. SQL Server URL: `abez.database.windows.net`
  * Connection string with credentialss can be found in appsettings.json
 
