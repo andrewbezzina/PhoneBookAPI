@@ -12,12 +12,12 @@ namespace PhoneBookAPI.Services.Companies
     {
         private readonly PhoneBookDbContext _context;
 
-        public CompanyService(PhoneBookDbContext context, IMapper mapper)
+        public CompanyService(PhoneBookDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Company> Add(string name)
+        public async Task<Company> AddAsync(string name)
         {
             if (_context.Companies.IsNullOrEmpty())
             {
@@ -34,7 +34,7 @@ namespace PhoneBookAPI.Services.Companies
             return company;
         }
 
-        public async Task<IEnumerable<DisplayCompany>?> GetAll()
+        public async Task<IEnumerable<DisplayCompany>?> GetAllAsync()
         {
             if (_context.Companies.IsNullOrEmpty())
             {
@@ -45,7 +45,7 @@ namespace PhoneBookAPI.Services.Companies
         }
 
 
-        public async Task<DisplayCompany?> Get(int id)
+        public async Task<DisplayCompany?> GetAsync(int id)
         {
             if (_context.Companies.IsNullOrEmpty())
             {
@@ -54,7 +54,7 @@ namespace PhoneBookAPI.Services.Companies
             return await GetCompaniesWithPeopleCount().Where(dc => dc.CompanyId == id).FirstOrDefaultAsync();
         }
 
-        public async Task<bool> CompanyExists(int id)
+        public async Task<bool> CompanyExistsAsync(int id)
         {
             if (_context.Companies.IsNullOrEmpty())
             {
@@ -63,7 +63,7 @@ namespace PhoneBookAPI.Services.Companies
             return await _context.Companies.AnyAsync(c => c.CompanyId == id);
         }
 
-        public async Task<bool> CompanyExists(string name)
+        public async Task<bool> CompanyExistsAsync(string name)
         {
             if (_context.Companies.IsNullOrEmpty())
             {

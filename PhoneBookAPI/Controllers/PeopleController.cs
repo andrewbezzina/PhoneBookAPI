@@ -27,7 +27,7 @@ namespace PhoneBookAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DisplayPerson>>> GetPersons()
         {
-            var people = await _peopleService.GetAll();
+            var people = await _peopleService.GetAllAsync();
             if (people.IsNullOrEmpty())
             {
                 return NotFound();
@@ -41,7 +41,7 @@ namespace PhoneBookAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<DisplayPerson>> GetPerson(int id)
         {
-            var person = await _peopleService.Get(id);
+            var person = await _peopleService.GetAsync(id);
 
             if (person == null)
             {
@@ -57,7 +57,7 @@ namespace PhoneBookAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<DisplayPerson>>> SearchPerson(string searchString)
         {
-            var people = await _peopleService.Search(searchString);
+            var people = await _peopleService.SearchAsync(searchString);
             if (people.IsNullOrEmpty())
             {
                 return NotFound();
@@ -71,7 +71,7 @@ namespace PhoneBookAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<DisplayPerson>> WildCard()
         {
-            var person = await _peopleService.WildCard();
+            var person = await _peopleService.WildCardAsync();
 
             if (person == null)
             {
@@ -92,12 +92,12 @@ namespace PhoneBookAPI.Controllers
                 return BadRequest();
             }
 
-            if (person == null || !await _companyService.CompanyExists(person.CompanyId))
+            if (person == null || !await _companyService.CompanyExistsAsync(person.CompanyId))
             {
                 return NotFound($"Company with id: {person.CompanyId} not found");
             }
 
-            var ret = await _peopleService.Update(id, person);
+            var ret = await _peopleService.UpdateAsync(id, person);
             if ( ret == null)
             {
                 return NotFound();
@@ -112,12 +112,12 @@ namespace PhoneBookAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         public async Task<ActionResult<Person>> PostPerson(PersonDetails person)
         {
-            if(person == null || !await _companyService.CompanyExists(person.CompanyId))
+            if(person == null || !await _companyService.CompanyExistsAsync(person.CompanyId))
             {
                 return NotFound($"Company with id: {person.CompanyId} not found");
             }
 
-            var retPerson = await _peopleService.Add(person);
+            var retPerson = await _peopleService.AddAsync(person);
             if (retPerson == null)
             {
                 return Problem("Unable to connect to DB");
@@ -132,7 +132,7 @@ namespace PhoneBookAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeletePerson(int id)
         {
-            var person = await _peopleService.Remove(id);
+            var person = await _peopleService.RemoveAsync(id);
             if (person == null)
             {
                 return NotFound();

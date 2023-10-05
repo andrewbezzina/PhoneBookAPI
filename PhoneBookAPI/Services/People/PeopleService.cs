@@ -19,7 +19,7 @@ namespace PhoneBookAPI.Services.People
             _mapper =mapper;
         }
 
-        public async Task<Person> Add(PersonDetails addPerson)
+        public async Task<Person> AddAsync(PersonDetails addPerson)
         {
             if (_context.People.IsNullOrEmpty())
             {
@@ -32,7 +32,7 @@ namespace PhoneBookAPI.Services.People
             return person;
         }
 
-        public async Task<DisplayPerson?> Get(int id)
+        public async Task<DisplayPerson?> GetAsync(int id)
         {
             if (_context.People.IsNullOrEmpty() || _context.Companies.IsNullOrEmpty())
             {
@@ -42,7 +42,7 @@ namespace PhoneBookAPI.Services.People
             return await GetPeopleWithCompanyName().Where(dp => dp.PersonId == id).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<DisplayPerson>?> GetAll()
+        public async Task<IEnumerable<DisplayPerson>?> GetAllAsync()
         {
             if (_context.People.IsNullOrEmpty())
             {
@@ -52,7 +52,7 @@ namespace PhoneBookAPI.Services.People
             return await GetPeopleWithCompanyName().ToListAsync();
         }
 
-        public async Task<Person?> Remove(int id)
+        public async Task<Person?> RemoveAsync(int id)
         {
             if (_context.People.IsNullOrEmpty())
             {
@@ -69,7 +69,7 @@ namespace PhoneBookAPI.Services.People
             return person;
         }
 
-        public async Task<IEnumerable<DisplayPerson>?> Search(string searchString)
+        public async Task<IEnumerable<DisplayPerson>?> SearchAsync(string searchString)
         {
             if (_context.People == null)
             {
@@ -83,7 +83,7 @@ namespace PhoneBookAPI.Services.People
             
         }
 
-        public async Task<Person?> Update(int id, Person person)
+        public async Task<Person?> UpdateAsync(int id, Person person)
         {
             if (_context.People.IsNullOrEmpty())
             {
@@ -110,7 +110,7 @@ namespace PhoneBookAPI.Services.People
             }
         }
 
-        public async Task<DisplayPerson?> WildCard()
+        public async Task<DisplayPerson?> WildCardAsync()
         {
             if (_context.People.IsNullOrEmpty() )
             {

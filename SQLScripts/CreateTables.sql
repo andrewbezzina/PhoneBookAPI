@@ -17,3 +17,7 @@ CREATE TABLE People (
 
 GO 
 
+CREATE INDEX People_Company_Key_Index
+ON People (CompanyId);
+
+GO

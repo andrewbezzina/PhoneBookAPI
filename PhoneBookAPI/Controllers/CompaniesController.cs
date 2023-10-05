@@ -26,7 +26,7 @@ namespace PhoneBookAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<DisplayCompany>>> GetCompanies()
         {
-            var companies = await _companyService.GetAll();
+            var companies = await _companyService.GetAllAsync();
             if (companies.IsNullOrEmpty())
             {
                 return NotFound();
@@ -41,7 +41,7 @@ namespace PhoneBookAPI.Controllers
         public async Task<ActionResult<DisplayCompany>> GetCompany(int id)
         {
 
-            var company = await _companyService.Get(id);
+            var company = await _companyService.GetAsync(id);
 
             if (company == null)
             {
@@ -57,12 +57,12 @@ namespace PhoneBookAPI.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<Company>> PostCompany(string companyName)
         {
-            if (await _companyService.CompanyExists(companyName))
+            if (await _companyService.CompanyExistsAsync(companyName))
             {
                 return Conflict($"Company name '{companyName}' already exists in database.");
             }
             
-            var company = await _companyService.Add(companyName);
+            var company = await _companyService.AddAsync(companyName);
 
             return CreatedAtAction("PostCompany", new { id = company.CompanyId }, company);
         }

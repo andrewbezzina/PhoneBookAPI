@@ -5,10 +5,10 @@ namespace PhoneBookAPI.Services.Companies
 {
     public interface ICompanyService
     {
-        public Task<Company> Add(string name);
-        public Task<DisplayCompany?> Get(int id);
-        public Task<IEnumerable<DisplayCompany>?> GetAll();
-        public Task<bool> CompanyExists(int id);
-        public Task<bool> CompanyExists(string name);
+        public Task<Company> AddAsync(string name);
+        public Task<DisplayCompany?> GetAsync(int id);
+        public Task<IEnumerable<DisplayCompany>?> GetAllAsync();
+        public Task<bool> CompanyExistsAsync(int id);
+        public Task<bool> CompanyExistsAsync(string name);
     }
 }

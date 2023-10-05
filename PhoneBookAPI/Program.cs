@@ -2,6 +2,9 @@ using Autofac.Extensions.DependencyInjection;
 using Autofac;
 using PhoneBookAPI.DataLayer.Contexts;
 using Autofac.Core;
+using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 
 namespace PhoneBookAPI
 {
@@ -23,7 +26,7 @@ namespace PhoneBookAPI
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.json");
-            builder.Services.AddDbContext<PhoneBookDbContext>();
+            builder.Services.AddDbContext<PhoneBookDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("PhonebookSqlDatabase")));
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

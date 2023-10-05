@@ -6,12 +6,12 @@ namespace PhoneBookAPI.Services.People
 {
     public interface IPeopleService
     {
-        public Task<Person> Add(PersonDetails person);
-        public Task<DisplayPerson?> Get(int id);
-        public Task<IEnumerable<DisplayPerson>?> GetAll();
-        public Task<IEnumerable<DisplayPerson>?> Search(string searchString);
-        public Task<Person?> Update(int id, Person person);
-        public Task<Person?> Remove(int id);
-        public Task<DisplayPerson?> WildCard();
+        public Task<Person> AddAsync(PersonDetails person);
+        public Task<DisplayPerson?> GetAsync(int id);
+        public Task<IEnumerable<DisplayPerson>?> GetAllAsync();
+        public Task<IEnumerable<DisplayPerson>?> SearchAsync(string searchString);
+        public Task<Person?> UpdateAsync(int id, Person person);
+        public Task<Person?> RemoveAsync(int id);
+        public Task<DisplayPerson?> WildCardAsync();
     }
 }
