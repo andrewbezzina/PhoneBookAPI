@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PhoneBookAPI.DataLayer.Contexts;
 using PhoneBookAPI.DataLayer.Models;
 using PhoneBookAPI.DataLayer.Models.Response;
@@ -18,7 +19,7 @@ namespace PhoneBookAPI.Services.Companies
 
         public async Task<Company> Add(string name)
         {
-            if (_context.Companies == null)
+            if (_context.Companies.IsNullOrEmpty())
             {
                 return null; ;
             }
@@ -35,7 +36,7 @@ namespace PhoneBookAPI.Services.Companies
 
         public async Task<IEnumerable<DisplayCompany>?> GetAll()
         {
-            if (_context.Companies == null)
+            if (_context.Companies.IsNullOrEmpty())
             {
                 return null;
             }
@@ -46,20 +47,29 @@ namespace PhoneBookAPI.Services.Companies
 
         public async Task<DisplayCompany?> Get(int id)
         {
-            if (_context.Companies == null)
+            if (_context.Companies.IsNullOrEmpty())
             {
                 return null;
             }
             return await GetCompaniesWithPeopleCount().Where(dc => dc.CompanyId == id).FirstOrDefaultAsync();
         }
 
-        public async Task<bool> CompanyExists(string name)
+        public async Task<bool> CompanyExists(int id)
         {
-            if (_context.Companies == null)
+            if (_context.Companies.IsNullOrEmpty())
             {
                 return false;
             }
-            return await _context.Companies.AnyAsync(e => e.Name == name);
+            return await _context.Companies.AnyAsync(c => c.CompanyId == id);
+        }
+
+        public async Task<bool> CompanyExists(string name)
+        {
+            if (_context.Companies.IsNullOrEmpty())
+            {
+                return false;
+            }
+            return await _context.Companies.AnyAsync(c => c.Name == name);
         }
 
         private IQueryable<DisplayCompany> GetCompaniesWithPeopleCount()

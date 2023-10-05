@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PhoneBookAPI.DataLayer.Contexts;
 using PhoneBookAPI.DataLayer.Models;
@@ -73,64 +67,5 @@ namespace PhoneBookAPI.Controllers
             return CreatedAtAction("PostCompany", new { id = company.CompanyId }, company);
         }
 
-        // ***************
-        // Following endpoints automatically generated, leaving here for utility but would need to be refactored for prod code. 
-        // ***************
-
-        // PUT: api/Companies/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCompany(int id, Company company)
-        {
-            if (id != company.CompanyId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(company).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CompanyExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/Companies/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCompany(int id)
-        {
-            if (_context.Companies == null)
-            {
-                return NotFound();
-            }
-            var company = await _context.Companies.FindAsync(id);
-            if (company == null)
-            {
-                return NotFound();
-            }
-
-            _context.Companies.Remove(company);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool CompanyExists(int id)
-        {
-            return (_context.Companies?.Any(e => e.CompanyId == id)).GetValueOrDefault();
-        }
     }
 }

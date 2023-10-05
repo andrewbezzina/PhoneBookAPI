@@ -11,7 +11,6 @@ namespace PhoneBookAPI.Services.People
         public MappingProfile()
         {
             CreateMap<PersonDetails, Person>();
-            //CreateMap<Person, DisplayPerson>();
         }
     }
 }

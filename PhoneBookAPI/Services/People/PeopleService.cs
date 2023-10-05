@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PhoneBookAPI.DataLayer.Contexts;
 using PhoneBookAPI.DataLayer.Models;
 using PhoneBookAPI.DataLayer.Models.Request;
@@ -20,7 +21,7 @@ namespace PhoneBookAPI.Services.People
 
         public async Task<Person> Add(PersonDetails addPerson)
         {
-            if (_context.People == null)
+            if (_context.People.IsNullOrEmpty())
             {
                 return null; ;
             }
@@ -33,7 +34,7 @@ namespace PhoneBookAPI.Services.People
 
         public async Task<DisplayPerson?> Get(int id)
         {
-            if (_context.People == null || _context.Companies == null)
+            if (_context.People.IsNullOrEmpty() || _context.Companies.IsNullOrEmpty())
             {
                 return null;
             }
@@ -43,7 +44,7 @@ namespace PhoneBookAPI.Services.People
 
         public async Task<IEnumerable<DisplayPerson>?> GetAll()
         {
-            if (_context.People == null)
+            if (_context.People.IsNullOrEmpty())
             {
                 return null;
             }
@@ -53,7 +54,7 @@ namespace PhoneBookAPI.Services.People
 
         public async Task<Person?> Remove(int id)
         {
-            if (_context.People == null)
+            if (_context.People.IsNullOrEmpty())
             {
                 return null;
             }
@@ -84,7 +85,7 @@ namespace PhoneBookAPI.Services.People
 
         public async Task<Person?> Update(int id, Person person)
         {
-            if (_context.People == null)
+            if (_context.People.IsNullOrEmpty())
             {
                 return null;
             }
@@ -109,13 +110,15 @@ namespace PhoneBookAPI.Services.People
             }
         }
 
-        public async Task<Person?> WildCard()
+        public async Task<DisplayPerson?> WildCard()
         {
-            if (_context.People == null)
+            if (_context.People.IsNullOrEmpty() )
             {
                 return null;
             }
-            throw new NotImplementedException();
+            Random rand = new Random();
+            int toSkip = rand.Next(0, _context.People.Count());
+            return GetPeopleWithCompanyName().Skip(toSkip).FirstOrDefault();
         }
 
         private IQueryable<DisplayPerson> GetPeopleWithCompanyName()

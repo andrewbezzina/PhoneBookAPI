@@ -12,6 +12,6 @@ namespace PhoneBookAPI.Services.People
         public Task<IEnumerable<DisplayPerson>?> Search(string searchString);
         public Task<Person?> Update(int id, Person person);
         public Task<Person?> Remove(int id);
-        public Task<Person?> WildCard();
+        public Task<DisplayPerson?> WildCard();
     }
 }

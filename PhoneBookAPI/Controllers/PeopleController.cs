@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PhoneBookAPI.DataLayer.Contexts;
 using PhoneBookAPI.DataLayer.Models;
 using PhoneBookAPI.DataLayer.Models.Request;
 using PhoneBookAPI.DataLayer.Models.Response;
+using PhoneBookAPI.Services.Companies;
 using PhoneBookAPI.Services.People;
 
 namespace PhoneBookAPI.Controllers
@@ -18,12 +12,12 @@ namespace PhoneBookAPI.Controllers
     [ApiController]
     public class PeopleController : ControllerBase
     {
-        private readonly PhoneBookDbContext _context;
+        private readonly ICompanyService _companyService;
         private readonly IPeopleService _peopleService;
 
-        public PeopleController(PhoneBookDbContext context, IPeopleService peopleService)
+        public PeopleController(ICompanyService companyService, IPeopleService peopleService)
         {
-            _context = context;
+            _companyService = companyService;
             _peopleService = peopleService;
         }
 
@@ -71,6 +65,22 @@ namespace PhoneBookAPI.Controllers
             return people.ToList();
         }
 
+        // GET: api/People/wildcard
+        [HttpGet("wildcard")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DisplayPerson))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<DisplayPerson>> WildCard()
+        {
+            var person = await _peopleService.WildCard();
+
+            if (person == null)
+            {
+                return NotFound();
+            }
+
+            return person;
+        }
+
         // PUT: api/People/5
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -80,6 +90,11 @@ namespace PhoneBookAPI.Controllers
             if (id != person.PersonId)
             {
                 return BadRequest();
+            }
+
+            if (person == null || !await _companyService.CompanyExists(person.CompanyId))
+            {
+                return NotFound($"Company with id: {person.CompanyId} not found");
             }
 
             var ret = await _peopleService.Update(id, person);
@@ -94,8 +109,13 @@ namespace PhoneBookAPI.Controllers
         // POST: api/People
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Person))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         public async Task<ActionResult<Person>> PostPerson(PersonDetails person)
         {
+            if(person == null || !await _companyService.CompanyExists(person.CompanyId))
+            {
+                return NotFound($"Company with id: {person.CompanyId} not found");
+            }
 
             var retPerson = await _peopleService.Add(person);
             if (retPerson == null)
